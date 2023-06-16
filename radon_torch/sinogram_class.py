@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
-import torchvision.transforms.functional as F
+from torchvision.transforms.functional import rotate, InterpolationMode
 
-# Class Definition
 class ImageRotator(nn.Module):
     def __init__(self):
         super(ImageRotator, self).__init__()
@@ -21,7 +20,7 @@ class ImageRotator(nn.Module):
         for i in range(n):
             image = image_batch[i]  # Get current image
             for j in range(k):
-                image_rotated = F.rotate(image, angles[j])  # Rotate the image
+                image_rotated = rotate(image, -angles[j], interpolation=InterpolationMode.BILINEAR)  # Rotate the image in the opposite direction
                 rotated_imgs[i][j] = image_rotated
         self.rotated_batch = rotated_imgs
 
@@ -47,4 +46,3 @@ class ImgToSinogram(nn.Module):
             sinograms[i] = sinogram
 
         self.sinogram_batch = sinograms
-###############################################################

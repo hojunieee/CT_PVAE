@@ -2,23 +2,19 @@
 ### Date: June 15, 2023
 ### Last Updated: Jun 15, 2023
 ### Description: Radon Transform (obj to sinogram)
-
 import torch
-import torch.nn as nn
-import torchvision.transforms.functional as F
 import os
 import time
 import numpy as np
 
-from helper import create_folder, plot_2_img_tensor
+from torchvision.utils import save_image
 from sinogram_class import ImageRotator, ImgToSinogram
-
 
 def main():
     ###############################################################
     # Specify the file paths
     sinogram_path = os.path.join(os.pardir, 'dataset_foam', 'x_train_sinograms.npy')
-    obj_path = os.path.join(os.pardir, 'foam_training.npy')
+    obj_path = os.path.join(os.pardir,  'dataset_foam' ,'foam_training.npy')
 
     # Load the .npy files
     sinogram_data = np.load(sinogram_path)
@@ -30,9 +26,9 @@ def main():
 
     # Preprocess
     image_batch = obj_tensor.unsqueeze(1) # Size = (n,y,x)
-    angles = np.arange(1, 181, dtype=float) # Angle list
+    angles = np.arange(91, 271, dtype=float) # Angle list
     
-    # Create an instances for the class
+    # Create instances of the classes
     rotata = ImageRotator()
     sinooo = ImgToSinogram()
 
@@ -43,18 +39,21 @@ def main():
     # Define Variables to save results
     rotated_images_batch = rotata.rotated_batch # torch.Size([50, 180, 128, 128])
     sinogram_batch = sinooo.sinogram_batch # torch.Size([50, 180, 128])
+    
+    # Create the data folder if it doesn't exist
+    data_folder = 'data'
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
+
+    # Save sinogram_batch as .npy file
+    sinogram_file = os.path.join(data_folder, 'sinogram_batch.npy')
+    np.save(sinogram_file, sinogram_batch)
+    
     ###############################################################
     
-    # Trying to save images
-    img_type = "synthetic_foam"
-    save_path = img_type + "_output"
-    create_folder(save_path)
-    create_folder(save_path +"/")
-
 
 if __name__ == '__main__':
     start_time = time.time()
     main()
     end_time = time.time()
     print('Total time was ' + str((end_time-start_time)/60) + ' minutes.')
-
