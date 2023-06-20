@@ -20,7 +20,7 @@ class ImageRotator(nn.Module):
         for i in range(n):
             image = image_batch[i]  # Get current image
             for j in range(k):
-                image_rotated = rotate(image, -angles[j], interpolation=InterpolationMode.BILINEAR)  # Rotate the image in the opposite direction
+                image_rotated = rotate(image, -float(angles[j]), interpolation=InterpolationMode.BILINEAR)  # Rotate the image in the opposite direction
                 rotated_imgs[i][j] = image_rotated
         self.rotated_batch = rotated_imgs
 
